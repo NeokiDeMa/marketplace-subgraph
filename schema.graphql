@@ -1,0 +1,102 @@
+type DeleteItem @entity(immutable: true) {
+  id: Bytes!
+  tokenId: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type NewBoughtItem @entity(immutable: true) {
+  id: Bytes!
+  itemId: BigInt! # uint256
+  tokenId: BigInt! # uint256
+  price: BigInt! # uint256
+  amount: BigInt! # uint256
+  seller: Bytes! # address
+  nftContract: Bytes! # address
+  buyer: Bytes! # address
+  buyingAmount: BigInt! # uint256
+  payed: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type NewListing @entity(immutable: true) {
+  id: Bytes!
+  itemId: BigInt! # uint256
+  tokenId: BigInt! # uint256
+  amount: BigInt! # uint256
+  price: BigInt! # uint256
+  owner: Bytes! # address
+  nftContract: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type RoleAdminChanged @entity(immutable: true) {
+  id: Bytes!
+  role: Bytes! # bytes32
+  previousAdminRole: Bytes! # bytes32
+  newAdminRole: Bytes! # bytes32
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type RoleGranted @entity(immutable: true) {
+  id: Bytes!
+  role: Bytes! # bytes32
+  account: Bytes! # address
+  sender: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type RoleRevoked @entity(immutable: true) {
+  id: Bytes!
+  role: Bytes! # bytes32
+  account: Bytes! # address
+  sender: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type UpdateItemAddAmount @entity(immutable: true) {
+  id: Bytes!
+  itemId: BigInt! # uint256
+  addingAmount: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type UpdateItemPrice @entity(immutable: true) {
+  id: Bytes!
+  itemId: BigInt! # uint256
+  newPrice: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type UpdateItemRemoveAmount @entity(immutable: true) {
+  id: Bytes!
+  itemId: BigInt! # uint256
+  addingAmount: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type UpdateMarketplaceFee @entity(immutable: true) {
+  id: Bytes!
+  sender: Bytes! # address
+  amount: Int! # uint16
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
