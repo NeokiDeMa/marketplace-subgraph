@@ -2,7 +2,7 @@ specVersion: 0.0.5
 features:
   - ipfsOnEthereumContracts
 schema:
-  file: ./schema.graphql
+  file: schema.graphql
 dataSources:
   - kind: ethereum/contract
     name: Marketplace
@@ -12,7 +12,7 @@ dataSources:
       abi: Marketplace
       startBlock: 34051885
     mapping:
-      file: ./src/marketplace.ts
+      file: Marketplace\Marketplace.wasm
       kind: ethereum/events
       apiVersion: 0.0.7
       language: wasm/assemblyscript
@@ -20,26 +20,18 @@ dataSources:
         - ListedItem
       abis:
         - name: Marketplace
-          file: ./abis/Marketplace.json
+          file: Marketplace\abis\Marketplace.json
       eventHandlers:
         - event: DeleteItem(uint256)
           handler: handleDeleteItem
-
         - event: BuyItem(uint256,uint256)
           handler: handleNewBoughtItem
-
         - event: NewListing(uint256,uint256,uint256,uint256,address,address)
           handler: handleNewListing
-
         - event: UpdateItemPrice(uint256,uint256)
           handler: handleUpdateItemPrice
-
         - event: UpdateItemAmount(uint256,uint256)
           handler: handleUpdateItemAmount
-
-# --------------------------------------------------------------------------------------
-# All NFTs ERC721 & ERC1155 - combined ABIs on the ./abi/Token.json
-# --------------------------------------------------------------------------------------
 templates:
   - name: Token
     kind: ethereum/contract
@@ -47,7 +39,7 @@ templates:
     source:
       abi: Token
     mapping:
-      file: ./src/marketplace.ts
+      file: Marketplace\Marketplace.wasm
       kind: ethereum/events
       apiVersion: 0.0.7
       language: wasm/assemblyscript
@@ -55,11 +47,10 @@ templates:
         - NFT
       abis:
         - name: Token
-          file: ./abis/Token.json
-      # eventHandlers:
-      #   - event: Transfer(indexed address,indexed address,indexed uint256)
-      #     handler: handleSingleTransfer
-      #   - event: TransferSingle(indexed address,indexed address,indexed address,uint256,uint256)
-      #     handler: handleSingleTransfer
-      #   - event: TransferBatch(indexed address,indexed address,indexed address,uint256[],uint256[])
-      #     handler: handleBatchTransfer
+          file: Token\abis\Token.json
+        - name: ERC721
+          file: Token\abis\ERC721.json
+        - name: ERC1155
+          file: Token\abis\ERC1155.json
+        - name: Marketplace
+          file: Token\abis\Marketplace.json
