@@ -1,4 +1,4 @@
-import { BigInt, Bytes, ipfs } from "@graphprotocol/graph-ts";
+import { BigInt, Bytes } from "@graphprotocol/graph-ts";
 import { ListedItem, NFT } from "../generated/schema";
 import {
   DeleteItem as DeleteItemEvent,
@@ -15,11 +15,13 @@ import {
   getTokenName,
   getTokenURI,
 } from "./modules/nft";
+import { log } from "matchstick-as";
 
 export function handleNewListing(event: NewListingEvent): void {
   let tokenAddress = event.params.nftContract;
   let tokenId = event.params.tokenId;
   let nftId = getNFTId(tokenAddress, tokenId);
+  log.debug("NFT ID: {} ", [nftId]);
 
   let nft = NFT.load(nftId);
 
@@ -28,13 +30,19 @@ export function handleNewListing(event: NewListingEvent): void {
     let name = getTokenName(tokenURI);
     let description = getTokenDescription(tokenURI);
     let image = getTokenImage(tokenURI);
+    log.debug("Creating tokenURI: {}, name {}, description {}, image {}", [
+      tokenURI,
+      name,
+      description,
+      image,
+    ]);
 
     nft = new NFT(nftId);
     nft.tokenID = tokenId;
     nft.tokenURI = tokenURI;
-    nft.name = name;
-    nft.description = description;
-    nft.image = image;
+    // nft.name = name;
+    // nft.description = description;
+    // nft.image = image;
   }
 
   let item = new ListedItem(Bytes.fromI32(event.params.itemId.toI32()));

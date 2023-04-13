@@ -21,6 +21,8 @@ dataSources:
       abis:
         - name: Marketplace
           file: ./abis/Marketplace.json
+        - name: Token
+          file: ./abis/Token.json
       eventHandlers:
         - event: DeleteItem(uint256)
           handler: handleDeleteItem
