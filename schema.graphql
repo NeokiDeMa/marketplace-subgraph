@@ -23,8 +23,10 @@ type Token @entity {
   name: String
   description: String
   tokenURI: String
+  categories: [Category]
+  features: [Feature]
+  scarcity: Scarcity
   listed: ListedItem @derivedFrom(field: "nft")
-  
 }
 
 # type Attributes @entity {

@@ -39,6 +39,7 @@ export function handleNewListing(event: NewListingEvent): void {
         const name = value.get("name");
         const description = value.get("description");
         const image = value.get("image");
+        const attributes = value.get("attributes");
 
         if (name && image && description) {
           token.id = nftId;
@@ -46,6 +47,17 @@ export function handleNewListing(event: NewListingEvent): void {
           token.name = name.toString();
           token.image = image.toString();
           token.description = description.toString();
+        }
+
+        if (attributes && attributes.data) {
+          const attributesArray = attributes.toArray();
+          const categories = [];
+          const features = [];
+          const scarcity = "";
+
+          for (let i = 0; i < attributesArray.length; i++) {
+            log.debug("NFT attributes", [attributesArray[i].data.toString()]);
+          }
         }
       }
     } else {
