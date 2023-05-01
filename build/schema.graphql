@@ -1,5 +1,5 @@
 type ListedItem @entity {
-  id: Bytes!
+  id: ID!
   itemId: BigInt! # uint256
   tokenId: BigInt! # uint256
   amount: BigInt! # uint256
@@ -9,22 +9,21 @@ type ListedItem @entity {
   createdAt: BigInt!
   updatedAt: BigInt!
   isSellable: Boolean!
-  nft: NFT!
-}
-
-type NFT @entity {
-  id: ID!
-  tokenID: BigInt!
-  tokenURI: String!
+  image: String
   name: String
   description: String
+  tokenUri: String
+  nft: Token
+}
+
+type Token @entity {
+  id: ID!
+  tokenID: BigInt
   image: String
-  # updatedAtTimestamp: BigInt
-  # image: String!
-  # externalURL: String!
-  # name: String!
-  # description: String!
-  # attributes: Attributes
+  name: String
+  description: String
+  tokenURI: String
+  listed: ListedItem @derivedFrom(field: "nft")
 }
 
 # type Attributes @entity {

@@ -1,5 +1,7 @@
-import { BigInt, Bytes } from "@graphprotocol/graph-ts";
-import { ListedItem, NFT } from "../generated/schema";
+import { BigInt, Bytes, ipfs, json } from "@graphprotocol/graph-ts";
+import { ListedItem, Token } from "../generated/schema";
+import { getNFTId, getTokenURI } from "./modules/nft";
+import { log } from "matchstick-as";
 import {
   DeleteItem as DeleteItemEvent,
   BuyItem as NewBoughtItemEvent,
@@ -8,44 +10,53 @@ import {
   UpdateItemPrice as UpdateItemPriceEvent,
 } from "../generated/Marketplace/Marketplace";
 
-import {
-  getNFTId,
-  getTokenDescription,
-  getTokenImage,
-  getTokenName,
-  getTokenURI,
-} from "./modules/nft";
-import { log } from "matchstick-as";
-
 export function handleNewListing(event: NewListingEvent): void {
-  let tokenAddress = event.params.nftContract;
-  let tokenId = event.params.tokenId;
-  let nftId = getNFTId(tokenAddress, tokenId);
-  log.debug("NFT ID: {} ", [nftId]);
+  const tokenId = event.params.tokenId;
+  const nftContract = event.params.nftContract;
 
-  let nft = NFT.load(nftId);
+  const nftId = getNFTId(event.params.nftContract, event.params.tokenId);
 
-  if (!nft) {
-    let tokenURI = getTokenURI(tokenId, tokenAddress);
-    let name = getTokenName(tokenURI);
-    let description = getTokenDescription(tokenURI);
-    let image = getTokenImage(tokenURI);
-    log.debug("Creating tokenURI: {}, name {}, description {}, image {}", [
-      tokenURI,
-      name,
-      description,
-      image,
+  let token = Token.load(nftId);
+
+  if (!token) {
+    token = new Token(nftId);
+    let ipfsHash = getTokenURI(tokenId, nftContract);
+
+    log.debug("Got tokenId {} ipfsURL: {}", [
+      tokenId.toString(),
+      ipfsHash.toString(),
     ]);
 
-    nft = new NFT(nftId);
-    nft.tokenID = tokenId;
-    nft.tokenURI = tokenURI;
-    // nft.name = name;
-    // nft.description = description;
-    // nft.image = image;
+    if (ipfsHash) {
+      token.tokenURI = ipfsHash.toString();
+    }
+    let ipfsHashTreated = ipfsHash.replace("ipfs://", "");
+    let metadata = ipfs.cat(ipfsHashTreated); // ipfs://QmeuAixk72C5roa9HuPjh6MksX2qJSkzUxhzeM1Y9TZxc4
+    if (metadata) {
+      const value = json.fromBytes(metadata).toObject();
+
+      if (value) {
+        const name = value.get("name");
+        const description = value.get("description");
+        const image = value.get("image");
+
+        if (name && image && description) {
+          token.id = nftId;
+          token.tokenID = tokenId;
+          token.name = name.toString();
+          token.image = image.toString();
+          token.description = description.toString();
+        }
+      }
+    } else {
+      log.debug("TokenId {} from contract {} reverted for URI call", [
+        tokenId.toString(),
+        nftContract.toString(),
+      ]);
+    }
   }
 
-  let item = new ListedItem(Bytes.fromI32(event.params.itemId.toI32()));
+  let item = new ListedItem(event.params.itemId.toString());
 
   item.itemId = event.params.itemId;
   item.tokenId = event.params.tokenId;
@@ -56,12 +67,16 @@ export function handleNewListing(event: NewListingEvent): void {
   item.isSellable = true;
   item.createdAt = event.block.timestamp;
   item.updatedAt = event.block.timestamp;
-  item.nft = nft.id;
+  item.nft = token.id;
+
+  // token.listed = item.id;
+
   item.save();
+  token.save();
 }
 
 export function handleNewBoughtItem(event: NewBoughtItemEvent): void {
-  let entity = ListedItem.load(Bytes.fromI32(event.params.itemId.toI32()));
+  let entity = ListedItem.load(event.params.itemId.toString());
   if (!entity) {
     return;
   }
@@ -73,24 +88,23 @@ export function handleNewBoughtItem(event: NewBoughtItemEvent): void {
 }
 
 export function handleDeleteItem(event: DeleteItemEvent): void {
-  let entity = ListedItem.load(Bytes.fromI32(event.params.itemId.toI32()));
-  if (!entity) {
+  let item = ListedItem.load(event.params.itemId.toString());
+  if (!item) {
     return;
   }
-  entity.tokenId = BigInt.fromU32(0);
-  entity.amount = BigInt.fromU32(0);
-  entity.price = BigInt.fromU32(0);
-  entity.owner = Bytes.fromHexString("0x00");
-  entity.isSellable = false;
-  entity.nftContract = Bytes.fromHexString("0x00");
-  entity.updatedAt = event.block.timestamp;
-  entity.nft = "";
+  item.tokenId = BigInt.fromU32(0);
+  item.amount = BigInt.fromU32(0);
+  item.price = BigInt.fromU32(0);
+  item.owner = Bytes.fromHexString("0x00");
+  item.isSellable = false;
+  item.nftContract = Bytes.fromHexString("0x00");
+  item.updatedAt = event.block.timestamp;
 
-  entity.save();
+  item.save();
 }
 
 export function handleUpdateItemAmount(event: UpdateItemAmountEvent): void {
-  let entity = ListedItem.load(Bytes.fromI32(event.params.itemId.toI32()));
+  let entity = ListedItem.load(event.params.itemId.toString());
   if (!entity) {
     return;
   }
@@ -101,7 +115,7 @@ export function handleUpdateItemAmount(event: UpdateItemAmountEvent): void {
 }
 
 export function handleUpdateItemPrice(event: UpdateItemPriceEvent): void {
-  let entity = ListedItem.load(Bytes.fromI32(event.params.itemId.toI32()));
+  let entity = ListedItem.load(event.params.itemId.toString());
   if (!entity) {
     return;
   }
