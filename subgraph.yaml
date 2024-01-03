@@ -11,7 +11,7 @@ dataSources:
     source:
       address: "0xA14a366Ac98680539AABaFAbBa2eb0E58Ab4e0D5"
       abi: Marketplace
-      startBlock: 36071949
+      startBlock: 43801909
     mapping:
       file: ./src/marketplace.ts
       kind: ethereum/events
