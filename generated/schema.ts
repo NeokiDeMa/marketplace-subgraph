@@ -123,40 +123,6 @@ export class ListedItem extends Entity {
     this.set("isSellable", Value.fromBoolean(value));
   }
 
-  get image(): string | null {
-    let value = this.get("image");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
-  }
-
-  set image(value: string | null) {
-    if (!value) {
-      this.unset("image");
-    } else {
-      this.set("image", Value.fromString(<string>value));
-    }
-  }
-
-  get name(): string | null {
-    let value = this.get("name");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
-  }
-
-  set name(value: string | null) {
-    if (!value) {
-      this.unset("name");
-    } else {
-      this.set("name", Value.fromString(<string>value));
-    }
-  }
-
   get description(): string | null {
     let value = this.get("description");
     if (!value || value.kind == ValueKind.NULL) {
@@ -240,20 +206,20 @@ export class Token extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get tokenID(): BigInt | null {
+  get tokenID(): string | null {
     let value = this.get("tokenID");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
-      return value.toBigInt();
+      return value.toString();
     }
   }
 
-  set tokenID(value: BigInt | null) {
+  set tokenID(value: string | null) {
     if (!value) {
       this.unset("tokenID");
     } else {
-      this.set("tokenID", Value.fromBigInt(<BigInt>value));
+      this.set("tokenID", Value.fromString(<string>value));
     }
   }
 
@@ -322,6 +288,74 @@ export class Token extends Entity {
       this.unset("tokenURI");
     } else {
       this.set("tokenURI", Value.fromString(<string>value));
+    }
+  }
+
+  get categories(): Array<string> | null {
+    let value = this.get("categories");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set categories(value: Array<string> | null) {
+    if (!value) {
+      this.unset("categories");
+    } else {
+      this.set("categories", Value.fromStringArray(<Array<string>>value));
+    }
+  }
+
+  get features(): Array<string> | null {
+    let value = this.get("features");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set features(value: Array<string> | null) {
+    if (!value) {
+      this.unset("features");
+    } else {
+      this.set("features", Value.fromStringArray(<Array<string>>value));
+    }
+  }
+
+  get scarcity(): string | null {
+    let value = this.get("scarcity");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set scarcity(value: string | null) {
+    if (!value) {
+      this.unset("scarcity");
+    } else {
+      this.set("scarcity", Value.fromString(<string>value));
+    }
+  }
+
+  get twin(): string | null {
+    let value = this.get("twin");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set twin(value: string | null) {
+    if (!value) {
+      this.unset("twin");
+    } else {
+      this.set("twin", Value.fromString(<string>value));
     }
   }
 

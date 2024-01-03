@@ -9,9 +9,9 @@ dataSources:
     name: Marketplace
     network: mumbai
     source:
-      address: "0x730B874977532bBc639E1a7d54f7577745dC75d9"
+      address: "0xe1C239b11eA762eD462697a7749c38A831836EE8"
       abi: Marketplace
-      startBlock: 34051885
+      startBlock: 36071949
     mapping:
       file: Marketplace\Marketplace.wasm
       kind: ethereum/events

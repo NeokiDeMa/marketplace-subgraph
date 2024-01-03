@@ -2,10 +2,7 @@ import { Token } from "../../../generated/templates/Token/Token";
 import { log } from "matchstick-as";
 import { Address, BigInt } from "@graphprotocol/graph-ts";
 
-export function getNFTId(contractAddress: Address, tokenId: BigInt): string {
-  return contractAddress.toHexString() + "-" + tokenId.toString();
-}
-
+ 
 export function getTokenURI(tokenId: BigInt, tokenAddress: Address): string {
   let token = Token.bind(tokenAddress);
   let tokenURICallResult = token.try_tokenURI(tokenId);
@@ -15,21 +12,42 @@ export function getTokenURI(tokenId: BigInt, tokenAddress: Address): string {
   if (tokenURICallResult.reverted) {
     let uriCallResult = token.try_uri(tokenId);
     if (uriCallResult.reverted) {
-      log.warning("tokenURI reverted for tokenID: {} contract: {}", [
+      log.error("Could not get URI for tokenID: {} contract: {}", [
         tokenId.toString(),
         tokenAddress.toHexString(),
       ]);
     } else {
-      tokenURI = uriCallResult.value;
+      let tokenURIvalue = uriCallResult.value;
+      if (tokenURIvalue) {
+        tokenURI = tokenURIvalue;
+        log.debug("Loaded tokenURI - {}, from tokenID: {} contract: {}", [
+          tokenURI,
+          tokenId.toString(),
+          tokenAddress.toHexString(),
+        ]);
+      } else {
+        log.error("Could not get URI for tokenID: {} contract: {}", [
+          tokenId.toString(),
+          tokenAddress.toHexString(),
+        ]);
+      }
     }
   } else {
-    tokenURI = tokenURICallResult.value;
+    let tokenURIvalue = tokenURICallResult.value;
+    if (tokenURIvalue) {
+      tokenURI = tokenURIvalue;
+      log.debug("Loaded tokenURI - {}, from tokenID: {} contract: {}", [
+        tokenURI,
+        tokenId.toString(),
+        tokenAddress.toHexString(),
+      ]);
+    } else {
+      log.error("Could not get token URI of tokenID: {} contract: {}", [
+        tokenId.toString(),
+        tokenAddress.toHexString(),
+      ]);
+    }
   }
-  log.debug("tokenURI - {} tokenID: {} contract: {}", [
-    tokenURI,
-    tokenId.toString(),
-    tokenAddress.toHexString(),
-  ]);
 
   return tokenURI;
 }

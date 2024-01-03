@@ -9,8 +9,6 @@ type ListedItem @entity {
   createdAt: BigInt!
   updatedAt: BigInt!
   isSellable: Boolean!
-  image: String
-  name: String
   description: String
   tokenUri: String
   nft: Token
@@ -18,11 +16,15 @@ type ListedItem @entity {
 
 type Token @entity {
   id: ID!
-  tokenID: BigInt
+  tokenID: String
   image: String
   name: String
   description: String
   tokenURI: String
+  categories: [String!]
+  features: [String!]
+  scarcity: String
+  twin: String
   listed: ListedItem @derivedFrom(field: "nft")
 }
 
@@ -33,42 +35,42 @@ type Token @entity {
 #   scarcity: Scarcity
 # }
 
-enum Category @entity {
-  land
-  fashion
-  jewelry
-  accessory
-  architecture
-  interior
-  clothes
-  industrial
-  automotive
-  music
-  photography
-  beauty
-  gaming
-  space
-  fun
-  education
-  tickets
-}
+# enum Category @entity {
+#   land
+#   fashion
+#   jewelry
+#   accessory
+#   architecture
+#   interior
+#   clothes
+#   industrial
+#   automotive
+#   music
+#   photography
+#   beauty
+#   gaming
+#   space
+#   fun
+#   education
+#   tickets
+# }
 
-enum Feature {
-  ar
-  d2
-  d3
-  static
-  animated
-  dynamic
-}
+# enum Feature {
+#   ar
+#   d2
+#   d3
+#   static
+#   animated
+#   dynamic
+# }
 
-enum Scarcity {
-  standard
-  premium
-  superPremium
-  rare
-  superRare
-  legendary
-  superLegendary
-  ultimateLegendary
-}
+# enum Scarcity {
+#   standard
+#   premium
+#   superPremium
+#   rare
+#   superRare
+#   legendary
+#   superLegendary
+#   ultimateLegendary
+# }
